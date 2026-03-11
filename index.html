@@ -279,7 +279,7 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
 .surah-info-btn:active { transform: scale(0.9); }
 .surah-info-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-.verse-card{padding:26px 0 26px 12px;border-bottom:1px solid var(--border-soft);position:relative;border-left:3px solid transparent;opacity:0;transform:translateY(10px);transition:opacity .45s,transform .45s,border-left-color .35s,background .35s,padding-left .3s}
+.verse-card{padding:26px 0 26px 12px;border-bottom:1px solid var(--border-soft);position:relative;border-left:3px solid transparent;opacity:1;transform:translateY(0);transition:border-left-color .35s,background .35s,padding-left .3s}
 .verse-card.visible{opacity:1;transform:translateY(0)}
 .verse-card.active-verse{border-left-color:var(--gold);background:var(--gold-soft);padding-left:20px}
 .verse-meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -1685,13 +1685,12 @@ body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
     <div id="mfv-load-screen">
       <div class="mfv-load-ar">بِسْمِ اللَّهِ</div>
       <div class="mfv-load-track"><div class="mfv-load-bar" id="mfv-load-bar"></div></div>
-      <div class="mfv-load-lbl" id="mfv-load-lbl">Loading Mushaf…</div>
     </div>
     <!-- Error screen -->
     <div id="mfv-error-screen">
       <div class="mfv-err-icon">📖</div>
-      <div class="mfv-err-title">Mushaf unavailable</div>
-      <div class="mfv-err-msg" id="mfv-err-msg">The PDF could not be loaded. Ensure Quran_compressed.pdf is in the same folder as this HTML file and served via HTTP.</div>
+      <div class="mfv-err-title">Mushaf Unavailable</div>
+      <div class="mfv-err-msg" id="mfv-err-msg">Unable to load. Please check your connection.</div>
       <button class="mfv-err-btn" onclick="MushafFlipbook.retryLoad()">Try Again</button>
     </div>
 
@@ -1790,7 +1789,7 @@ const DEVICE_ID = (() => {
 const STORE_PREFIX = 'noor7_' + DEVICE_ID + '_';
 
 /* ── JUZ TABLE ── */
-const JUZ_DATA=[{juz:1,surah:1,ayah:1},{juz:2,surah:2,ayah:142},{juz:3,surah:2,ayah:253},{juz:4,surah:3,ayah:93},{juz:5,surah:4,ayah:24},{juz:6,surah:4,ayah:148},{juz:7,surah:5,ayah:83},{juz:8,surah:6,ayah:111},{juz:9,surah:7,ayah:88},{juz:10,surah:8,ayah:41},{juz:11,surah:9,ayah:94},{juz:12,surah:11,ayah:6},{juz:13,surah:12,ayah:53},{juz:14,surah:15,ayah:1},{juz:15,surah:17,ayah:1},{juz:16,surah:18,ayah:75},{juz:17,surah:21,ayah:1},{juz:18,surah:23,ayah:1},{juz:19,surah:25,ayah:21},{juz:20,surah:27,ayah:60},{juz:21,surah:29,ayah:45},{juz:22,surah:33,ayah:31},{juz:23,surah:36,ayah:22},{juz:24,surah:39,ayah:32},{juz:25,surah:41,ayah:47},{juz:26,surah:46,ayah:1},{juz:27,surah:51,ayah:31},{juz:28,surah:58,ayah:1},{juz:29,surah:67,ayah:1},{juz:30,surah:78,ayah:1}];
+const JUZ_DATA=[{juz:1,surah:1,ayah:1},{juz:2,surah:2,ayah:142},{juz:3,surah:2,ayah:253},{juz:4,surah:3,ayah:92},{juz:5,surah:4,ayah:24},{juz:6,surah:4,ayah:148},{juz:7,surah:5,ayah:82},{juz:8,surah:6,ayah:111},{juz:9,surah:7,ayah:88},{juz:10,surah:8,ayah:41},{juz:11,surah:9,ayah:93},{juz:12,surah:11,ayah:6},{juz:13,surah:12,ayah:53},{juz:14,surah:15,ayah:2},{juz:15,surah:17,ayah:1},{juz:16,surah:18,ayah:75},{juz:17,surah:21,ayah:1},{juz:18,surah:23,ayah:1},{juz:19,surah:25,ayah:21},{juz:20,surah:27,ayah:56},{juz:21,surah:29,ayah:46},{juz:22,surah:33,ayah:31},{juz:23,surah:36,ayah:28},{juz:24,surah:39,ayah:32},{juz:25,surah:41,ayah:47},{juz:26,surah:46,ayah:1},{juz:27,surah:51,ayah:31},{juz:28,surah:58,ayah:1},{juz:29,surah:67,ayah:1},{juz:30,surah:78,ayah:1}];
 function getJuz(s,a){let j=1;for(const d of JUZ_DATA){if(s>d.surah||(s===d.surah&&a>=d.ayah))j=d.juz;else break;}return j;}
 function getHizb(j){return(j-1)*2+1;}
 
@@ -2795,18 +2794,18 @@ const App={
     elSet('continue-meta',`Surah ${s} · Ayah ${a} · Juz ${juz}`);
     const arEl=document.getElementById('continue-ar');
     const trEl=document.getElementById('continue-tr');
-    const ayahData=this.s.fullSurah&&this.s.fullSurah[a-1];
-    if(arEl&&ayahData&&ayahData.words&&ayahData.words.length){
-      arEl.textContent=ayahData.words.filter(w=>w.char_type_name!=='end').map(w=>w.text_indopak||w.text).join(' ');
+    const ayahData=(this.s.fullSurah&&this.s.fullSurah.length&&this.s.currentSurah===s)?this.s.fullSurah[a-1]:null;
+    if(arEl){
+      if(ayahData&&ayahData.words&&ayahData.words.length){
+        arEl.textContent=ayahData.words.filter(w=>w.char_type_name!=='end').map(w=>w.text_indopak||w.text).join(' ');
+      }else{arEl.textContent='';}
     }
-    if(trEl&&ayahData){
-      const _rTr=(ayahData.translations&&ayahData.translations.length>0&&ayahData.translations[0].text)
-        ?ayahData.translations[0].text
-        :(ayahData.translation?ayahData.translation.text:'');
-      if(_rTr){
-        const clean=_rTr.replace(/<[^>]*>?/gm,'').replace(/^\d+\.\s*/,'').trim();
-        trEl.textContent=clean.length>90?clean.substring(0,90)+'…':clean;
-      }
+    if(trEl){
+      if(ayahData){
+        const _rTr=(ayahData.translations&&ayahData.translations.length>0&&ayahData.translations[0].text)?ayahData.translations[0].text:(ayahData.translation?ayahData.translation.text:'');
+        if(_rTr){const clean=_rTr.replace(/<[^>]*>?/gm,'').replace(/^\d+\.\s*/,'').trim();trEl.textContent=clean.length>90?clean.substring(0,90)+'…':clean;}
+        else{trEl.textContent='';}
+      }else{trEl.textContent='';}
     }
   },
 
@@ -2913,9 +2912,35 @@ const App={
   },
 
   resumeLastReading(){
-    this.loadSurah(this.s.currentSurah).then(()=>{
-      setTimeout(()=>this.scrollToAyah(this.s.currentAyah),600);
+    const s=this.s.currentSurah||1,a=this.s.currentAyah||1;
+    this.loadSurah(s).then(()=>{
+      setTimeout(()=>{
+        this.s.currentAyah=a;
+        this.persist('currentAyah',a);
+        this.showSurah();
+        setTimeout(()=>this.scrollToAyah(a),80);
+      },100);
     });
+  },
+
+  _updateAyahByScroll(){
+    const reader=document.getElementById('reader');
+    if(!reader)return;
+    const rTop=reader.getBoundingClientRect().top;
+    const midY=rTop+reader.clientHeight*0.35;
+    let best=null,bestDist=Infinity;
+    document.querySelectorAll('#surah-page .verse-card[data-num]').forEach(card=>{
+      const r=card.getBoundingClientRect();
+      const dist=Math.abs((r.top+r.height/2)-midY);
+      if(dist<bestDist){bestDist=dist;best=card;}
+    });
+    if(!best)return;
+    const n=parseInt(best.dataset.num);
+    if(!n||n===this.s.currentAyah)return;
+    this.s.currentAyah=n;
+    this.persist('currentAyah',n);
+    this.saveProgress(this.s.currentSurah,n);
+    this._updateFocusBar();
   },
 
   bindEvents(){
@@ -2970,7 +2995,7 @@ const App={
     });
 
     let raf=false;
-    reader.addEventListener('scroll',()=>{if(!raf){raf=true;requestAnimationFrame(()=>{const sy=reader.scrollTop,h=reader.scrollHeight-reader.clientHeight;document.getElementById('read-progress-bar').style.width=(h>0?sy/h*100:0)+'%';raf=false;});}},{passive:true});
+    reader.addEventListener('scroll',()=>{if(!raf){raf=true;requestAnimationFrame(()=>{const sy=reader.scrollTop,h=reader.scrollHeight-reader.clientHeight;document.getElementById('read-progress-bar').style.width=(h>0?sy/h*100:0)+'%';if(!this.s.onHomePage&&!this.s.isPlaying)this._updateAyahByScroll();raf=false;});}},{passive:true});
 
     let tStartX=0,tStartY=0;
     reader.addEventListener('touchstart',e=>{tStartX=e.touches[0].clientX;tStartY=e.touches[0].clientY;},{passive:true});
@@ -3641,7 +3666,9 @@ const App={
 
     document.getElementById('surah-page').innerHTML=html;
     document.getElementById('reader').scrollTop=0;
-    document.getElementById('surah-page').querySelectorAll('.verse-card').forEach(c=>this._io&&this._io.observe(c));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      document.getElementById('surah-page').querySelectorAll('.verse-card').forEach(c=>{c.classList.add('visible');this._io&&this._io.observe(c);});
+    }));
     this._updateFocusBar();
   },
 
@@ -3980,12 +4007,29 @@ const App={
   },
   deleteBk(key){const bk={...this.s.bookmarks};delete bk[key];this.persist('bookmarks',bk);this.renderBookmarks();this.toast('Bookmark removed');},
   goToBk(surah,ayah){
-    document.getElementById('bookmark-panel').classList.remove('open');document.getElementById('bk-overlay').classList.remove('active');
-    const jump=()=>{this.scrollToAyah(ayah);const c=document.getElementById(`vc-${ayah}`);if(c){c.classList.add('active-verse');setTimeout(()=>{if(!this.s.isPlaying||this.s.currentAyah!==ayah)c.classList.remove('active-verse');},3000);}};
-    if(surah!==this.s.currentSurah)this.loadSurah(surah).then(()=>setTimeout(jump,650));else{this.showSurah();jump();}
+    // Close panel first
+    document.getElementById('bookmark-panel').classList.remove('open');
+    document.getElementById('bk-overlay').classList.remove('active');
+    history.replaceState({noor:'surah'},'');
+    const reveal=()=>{
+      this.s.currentAyah=ayah;
+      this.persist('currentAyah',ayah);
+      this.s.onHomePage=false;
+      document.getElementById('home-page').style.display='none';
+      document.getElementById('surah-page').style.display='block';
+      if(this.uiVisible)document.getElementById('tr-mode-bar').classList.add('visible');
+      document.getElementById('surah-page').querySelectorAll('.verse-card').forEach(c=>c.classList.add('visible'));
+      setTimeout(()=>{
+        this.scrollToAyah(ayah);
+        const c=document.getElementById(`vc-${ayah}`);
+        if(c){c.classList.add('active-verse');setTimeout(()=>{if(!this.s.isPlaying||this.s.currentAyah!==ayah)c.classList.remove('active-verse');},3000);}
+      },80);
+    };
+    // Always reload to guarantee surah-page has content (may be empty on first open)
+    this.loadSurah(surah).then(()=>setTimeout(reveal,100));
   },
   exportBookmarks(){const d=JSON.stringify(this.s.bookmarks,null,2);const b=new Blob([d],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='noor-bookmarks.json';a.click();URL.revokeObjectURL(u);this.toast('Bookmarks exported');},
-  scrollToAyah(n){const c=document.getElementById(`vc-${n}`);if(c)setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'center'}),80);},
+  scrollToAyah(n){const c=document.getElementById(`vc-${n}`);if(c){c.classList.add('visible');setTimeout(()=>c.scrollIntoView({behavior:'smooth',block:'center'}),80);}},
 
   openNote(n){
     this._noteAyah=n;const key=`${this.s.currentSurah}-${n}`;
@@ -4792,30 +4836,30 @@ const MushafFlipbook = {
   closeFlipbook() { this.close(); },
 
   _loadPDFJs() {
-    const ls=document.getElementById('mfv-load-screen'),lb=document.getElementById('mfv-load-bar'),ll=document.getElementById('mfv-load-lbl');
-    ls.classList.remove('hidden'); lb.style.width='6%'; ll.textContent='Initializing PDF engine…';
-    if (this.pdfJsReady) { lb.style.width='22%'; ll.textContent='Loading Mushaf…'; this._loadPDF(); return; }
+    const ls=document.getElementById('mfv-load-screen'),lb=document.getElementById('mfv-load-bar');
+    ls.classList.remove('hidden'); lb.style.width='6%';
+    if (this.pdfJsReady) { lb.style.width='22%'; this._loadPDF(); return; }
     const sc=document.createElement('script');
     sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
     sc.onload=()=>{
       window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      this.pdfJsReady=true; lb.style.width='22%'; ll.textContent='Loading Mushaf…'; this._loadPDF();
+      this.pdfJsReady=true; lb.style.width='22%'; this._loadPDF();
     };
-    sc.onerror=()=>this._showError('PDF.js failed to load. Please check your internet connection.');
+    sc.onerror=()=>this._showError('');
     document.head.appendChild(sc);
   },
 
   _loadPDF() {
-    const lb=document.getElementById('mfv-load-bar'),ll=document.getElementById('mfv-load-lbl');
+    const lb=document.getElementById('mfv-load-bar');
     const task=window.pdfjsLib.getDocument({url:MUSHAF_PDF_URL,cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',cMapPacked:true});
-    task.onProgress=d=>{ if(d.total>0){lb.style.width=(22+Math.round((d.loaded/d.total)*70))+'%'; ll.textContent='Loading… '+Math.round(d.loaded/1024)+' KB';} };
+    task.onProgress=d=>{ if(d.total>0){lb.style.width=(22+Math.round((d.loaded/d.total)*70))+'%';} };
     task.promise.then(pdf=>{
       this.pdfDoc=pdf; this.totalPages=pdf.numPages; this.loaded=true;
-      lb.style.width='100%'; ll.textContent='بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+      lb.style.width='100%';
       setTimeout(()=>{ document.getElementById('mfv-load-screen').classList.add('hidden'); this._renderSpread(); },600);
     }).catch(err=>{
       console.error('[Mushaf]',err);
-      this._showError('Could not load Quran_compressed.pdf — ensure the file is in the same folder as this HTML and served via HTTP. ('+err.message+')');
+      this._showError('');
     });
   },
 
